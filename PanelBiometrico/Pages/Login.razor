@@ -1,0 +1,68 @@
+﻿@page "/login"
+@using System.Net.Http.Headers
+@using PanelBiometrico.DTO
+@inject HttpClient Http
+
+<div class="container text-center mt-5">
+    <h2>🔐 Acceso Biométrico</h2>
+    <p>Selecciona una foto o toma una selfie para ingresar.</p>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <InputFile OnChange="@Loguear" class="form-control form-control-lg" accept="image/*" capture="user" />
+
+                    @if (procesando)
+                    {
+                        <div class="mt-3">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p>Analizando rostro...</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (resultado != null)
+            {
+                <div class="alert mt-4 @(resultado.Autorizado ? "alert-success" : "alert-danger")">
+                    <h4>@(resultado.Autorizado ? "✅ ACCESO CONCEDIDO" : "⛔ DENEGADO")</h4>
+                    <p>@resultado.Mensaje</p>
+                    @if (resultado.EsSpoofing)
+                    {
+                        <strong class="text-danger">⚠️ ALERTA: INTENTO DE FRAUDE DETECTADO</strong>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool procesando = false;
+    private RespuestaLogin? resultado;
+
+    private async Task Loguear(InputFileChangeEventArgs e)
+    {
+        procesando = true;
+        resultado = null; // Limpiar resultado anterior
+
+        var archivo = e.File;
+        using var content = new MultipartFormDataContent();
+
+        // Convertir y preparar envío
+        var archivoStream = archivo.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+        var archivoContent = new StreamContent(archivoStream);
+        archivoContent.Headers.ContentType = new MediaTypeHeaderValue(archivo.ContentType);
+
+        content.Add(archivoContent, "foto", archivo.Name);
+
+        // Enviar a la API
+        var respuestaHttp = await Http.PostAsync("api/auth/login", content);
+
+        // Leemos la respuesta (Tu API ahora siempre devuelve JSON, incluso si falla, gracias a nuestros cambios)
+        resultado = await respuestaHttp.Content.ReadFromJsonAsync<RespuestaLogin>();
+
+        procesando = false;
+    }
+}

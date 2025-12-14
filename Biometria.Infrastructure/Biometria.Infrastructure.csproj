@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="SkiaSharp" Version="2.88.8" />
+
+		<PackageReference Include="ViewFaceCore" Version="0.3.8" />
+
+		<PackageReference Include="ViewFaceCore.model.fas_first" Version="6.0.7" />
+
+		<PackageReference Include="ViewFaceCore.model.fas_second" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.runtime.win.x64" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.model.face_detector" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.model.face_landmarker_pts5" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.model.face_recognizer" Version="6.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Biometria.Domain\Biometria.Domain.csproj" />
+	</ItemGroup>
+	
+</Project>

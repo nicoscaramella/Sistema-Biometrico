@@ -1,0 +1,44 @@
+## --- Visual Studio & .NET Standard --- ##
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## --- Archivos compilados y temporales --- ##
+*.dll
+*.exe
+*.pdb
+*.cache
+
+## --- Blazor WebAssembly --- ##
+# Ignorar la carpeta de publicación local
+.publish/
+pub/
+
+## --- Base de Datos (LocalDB y Logs) --- ##
+*.mdf
+*.ldf
+*.ndf
+*.sqlite
+*.db
+
+## --- Configuración con Secretos (Seguridad) --- ##
+# Ignoramos el appsettings de desarrollo por si tiene claves reales
+# (Asegúrate de que el appsettings.json normal tenga datos falsos/ejemplos)
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+## --- ViewFaceCore / SeetaFace6 (Modelos de IA) --- ##
+# Estos archivos son pesados y binarios, no deben ir a GitHub.
+# El usuario debe descargarlos o NuGet los baja al compilar.
+*.csta
+model/
+models/
+
+## --- Archivos del Sistema Operativo --- ##
+.DS_Store
+Thumbs.db
+.vs/

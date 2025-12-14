@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="ApiReconocimientoFacial/ApiReconocimientoFacial.csproj">
+    <BuildDependency Project="PanelBiometrico/PanelBiometrico.csproj" />
+    <BuildType Solution="Debug|Any CPU" Project="Release" />
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Biometria.Domain/Biometria.Domain.csproj" Id="8e4495b4-d62c-4e36-b45a-360da73272ab" />
+  <Project Path="Biometria.Infrastructure/Biometria.Infrastructure.csproj" Id="d6caa22f-bd80-40d3-9ee8-e0bc14f0b742" />
+  <Project Path="PanelBiometrico/PanelBiometrico.csproj" Id="0d6bbf28-bf7b-4306-9667-a9fdd73537ee" />
+  <Project Path="WebReconocimiento/WebReconocimiento.csproj" Id="553f3512-e543-47f2-a707-3f8a80ae8101" />
+</Solution>

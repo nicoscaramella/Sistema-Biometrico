@@ -1,0 +1,122 @@
+﻿@page "/"
+@inject IJSRuntime JS
+@inject HttpClient Http
+@using System.Net.Http.Headers
+
+<PageTitle>Acceso Biométrico</PageTitle>
+
+<div class="container text-center mt-5">
+    <h1 class="mb-4">🔐 Acceso Seguro</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-1">
+                    <video id="videoFeed" width="800" height="600"
+                           style="border-radius: 5px; transform: scaleX(-1);"
+                           autoplay></video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        @if (procesando)
+        {
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Verificando identidad...</p>
+        }
+        else
+        {
+            <button class="btn btn-primary btn-lg px-5 py-3" @onclick="ProcesarLogin">
+                👁️ ESCANEAR CARA PARA ENTRAR
+            </button>
+
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(mensaje))
+    {
+        <div class="alert mt-4 @claseAlerta shadow-sm">
+            <h3>@mensaje</h3>
+        </div>
+    }
+</div>
+
+@code {
+    // ⚠️ REVISA QUE EL PUERTO SEA EL CORRECTO
+    private const string ApiUrl = "http://localhost:5218";
+
+    private string mensaje = "";
+    private string claseAlerta = "";
+    private bool procesando = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("iniciarCamara", "videoFeed");
+        }
+    }
+
+    private async Task ProcesarLogin()
+    {
+        procesando = true;
+        mensaje = "";
+
+        try
+        {
+            // 1. Capturar foto (JS)
+            string fotoBase64 = await JS.InvokeAsync<string>("tomarFoto", "videoFeed");
+            var base64Data = fotoBase64.Split(',')[1];
+            byte[] imagenBytes = Convert.FromBase64String(base64Data);
+
+            // 2. Preparar envío
+            using var content = new MultipartFormDataContent();
+            var fileContent = new ByteArrayContent(imagenBytes);
+            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+            content.Add(fileContent, "foto", "login.jpg");
+
+            // 3. LLAMADA ÚNICA: Siempre llamamos a /login
+            var respuesta = await Http.PostAsync($"{ApiUrl}/api/Auth/login", content);
+
+            // 4. Leer resultado
+            var jsonString = await respuesta.Content.ReadAsStringAsync();
+            var opciones = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var resultado = System.Text.Json.JsonSerializer.Deserialize<ResultadoApi>(jsonString, opciones);
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                // Login Exitoso
+                mensaje = resultado?.Mensaje ?? "¡Bienvenido!";
+                claseAlerta = "alert-success";
+
+                // Opcional: Aquí podrías redirigir a otra página si quisieras
+                // NavigationManager.NavigateTo("/dashboard");
+            }
+            else
+            {
+                // Login Fallido (No reconocido o Spoofing)
+                mensaje = resultado?.Mensaje ?? "Acceso Denegado";
+                claseAlerta = "alert-danger";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensaje = "Error al conectar con el servidor.";
+            Console.WriteLine(ex.Message); // Para depurar en consola del navegador
+            claseAlerta = "alert-danger";
+        }
+        finally
+        {
+            procesando = false;
+        }
+    }
+
+    public class ResultadoApi
+    {
+        public string Mensaje { get; set; } = "";
+        public bool Autorizado { get; set; }
+        public bool EsSpoofing { get; set; }
+    }
+}

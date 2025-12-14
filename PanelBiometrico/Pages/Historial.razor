@@ -1,0 +1,79 @@
+﻿@page "/historial"
+@using PanelBiometrico.DTO
+@inject HttpClient Http
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>📅 Historial de Accesos</h3>
+        <button class="btn btn-outline-primary btn-sm" @onclick="CargarHistorial">🔄 Refrescar</button>
+    </div>
+
+    @if (accesos == null)
+    {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Cargando registros...</p>
+        </div>
+    }
+    else if (!accesos.Any())
+    {
+        <div class="alert alert-info">
+            No hay registros de acceso todavía. ¡Ve a la pantalla principal y prueba entrar!
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover align-middle mb-0 bg-white">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Usuario</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in accesos)
+                    {
+                        <tr>
+                            <td>@item.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                            <td class="fw-bold">@item.NombreUsuario</td>
+                            <td>
+                                @if (item.FueExitoso)
+                                {
+                                    <span class="badge bg-success rounded-pill">✅ Exitoso</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger rounded-pill">⛔ Fallido</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private List<AccesoDTO>? accesos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarHistorial();
+    }
+
+    private async Task CargarHistorial()
+    {
+        try
+        {
+            // Llamamos al endpoint que creamos antes en la API
+            accesos = await Http.GetFromJsonAsync<List<AccesoDTO>>("api/accesos");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando historial: {ex.Message}");
+        }
+    }
+}

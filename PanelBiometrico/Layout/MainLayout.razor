@@ -1,0 +1,68 @@
+﻿@inherits LayoutComponentBase
+@inject PanelBiometrico.Services.AuthState AuthState
+@inject NavigationManager Nav
+
+<div class="page">
+    @if (AuthState.EstaLogueado)
+    {
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+    }
+
+    <main>
+        <div class="top-row px-4">
+            @if (AuthState.EstaLogueado)
+            {
+                <button class="btn btn-link" @onclick="Salir">Cerrar Sesión Admin</button>
+            }
+            <a href="https://learn.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Nos suscribimos al evento para que la pantalla se refresque al loguearse
+        AuthState.OnChange += StateHasChanged;
+        VerificarAcceso();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // Seguridad extra: Si cambia de URL, verificamos
+        VerificarAcceso();
+    }
+
+    private void VerificarAcceso()
+    {
+        // Obtenemos la URL actual relativa (sin el dominio)
+        var url = Nav.ToBaseRelativePath(Nav.Uri).ToLower();
+
+        // Lista de páginas PÚBLICAS (Login facial)
+        // Si la URL está vacía ("") es el Home/LoginFacial
+        bool esPaginaPublica = string.IsNullOrEmpty(url) || url.StartsWith("login");
+
+        // Si intenta entrar a /usuarios o /historial SIN estar logueado...
+        if (!esPaginaPublica && !AuthState.EstaLogueado)
+        {
+            Nav.NavigateTo("/admin-login");
+        }
+    }
+
+    private void Salir()
+    {
+        AuthState.Logout();
+        Nav.NavigateTo("/");
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnChange -= StateHasChanged;
+    }
+}

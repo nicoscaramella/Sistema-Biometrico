@@ -1,0 +1,145 @@
+﻿@page "/usuarios"
+@using System.Net.Http.Headers
+@using PanelBiometrico.DTO
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<h3>👥 Gestión de Usuarios</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Nuevo Usuario</h5>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Nombre completo" @bind="nuevoNombre" />
+            </div>
+            <div class="col-md-4">
+                <InputFile OnChange="@CargarFoto" class="form-control" accept="image/*" />
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-primary" @onclick="RegistrarUsuario" disabled="@procesando">
+                    @(procesando ? "Subiendo..." : "Registrar")
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Fecha Registro</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (usuarios == null)
+        {
+            <tr><td colspan="4">Cargando...</td></tr>
+        }
+        else if (!usuarios.Any())
+        {
+            <tr><td colspan="4">No hay usuarios registrados.</td></tr>
+        }
+        else
+        {
+            @foreach (var user in usuarios)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Nombre</td>
+                    <td>@user.FechaRegistro.ToShortDateString()</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Eliminar(user.Id)">🗑️</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<UsuarioDto>? usuarios;
+    private string nuevoNombre = "";
+    private IBrowserFile? archivoSeleccionado;
+    private bool procesando = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarUsuarios();
+    }
+
+    async Task CargarUsuarios() =>
+        // Llama a tu endpoint GET /api/usuarios
+        usuarios = await Http.GetFromJsonAsync<List<UsuarioDto>>("api/usuarios");
+
+    private void CargarFoto(InputFileChangeEventArgs e)
+    {
+        archivoSeleccionado = e.File;
+    }
+
+    async Task RegistrarUsuario()
+    {
+        if (string.IsNullOrEmpty(nuevoNombre) || archivoSeleccionado == null) return;
+
+        procesando = true;
+
+        // Preparamos el multipart/form-data
+        using var content = new MultipartFormDataContent();
+        content.Add(new StringContent(nuevoNombre), "nombre");
+
+        // Convertir archivo a stream (Límite 10MB)
+        var imagenRedimensionada = await archivoSeleccionado.RequestImageFileAsync("image/jpeg", 800, 600);
+        var archivoStream = imagenRedimensionada.OpenReadStream();
+        var archivoContent = new StreamContent(archivoStream);
+        archivoContent.Headers.ContentType = new MediaTypeHeaderValue(archivoSeleccionado.ContentType);
+
+        content.Add(archivoContent, "foto", archivoSeleccionado.Name);
+
+        var respuesta = await Http.PostAsync("api/auth/registrar", content);
+
+        if (respuesta.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("alert", "Usuario registrado con éxito");
+            nuevoNombre = "";
+            archivoSeleccionado = null;
+            await CargarUsuarios(); // Refrescar tabla
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Error al registrar");
+        }
+        procesando = false;
+    }
+
+    async Task Eliminar(int id)
+    {
+        // 1. Preguntar confirmación (JavaScript)
+        bool confirmado = await JS.InvokeAsync<bool>("confirm", "¿Estás seguro de eliminar este usuario?");
+
+        // Si dice que "Cancelar", no hacemos nada
+        if (!confirmado) return;
+
+        // 2. Llamar a la API
+        // El signo $ es vital para meter el ID en la URL
+        var respuesta = await Http.DeleteAsync($"api/usuarios/{id}");
+
+        // 3. Verificar si salió bien
+        if (respuesta.IsSuccessStatusCode)
+        {
+            // 4. REFRESCAR LA LISTA
+            // Llamamos de nuevo a la base de datos para ver la lista actualizada
+            await CargarUsuarios();
+
+            // Opcional: Avisar éxito
+            // await JS.InvokeVoidAsync("alert", "Eliminado correctamente");
+        }
+        else
+        {
+            // Si falló (ej. error 500 o 404), mostramos el error
+            await JS.InvokeVoidAsync("alert", "Error al eliminar. Revisa que la API esté corriendo.");
+        }
+    }
+}

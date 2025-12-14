@@ -1,0 +1,128 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PlatformTarget>x64</PlatformTarget>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="SkiaSharp" Version="2.88.8" />
+
+		<PackageReference Include="ViewFaceCore" Version="0.3.8" />
+
+		<PackageReference Include="ViewFaceCore.model.fas_first" Version="6.0.7" />
+
+		<PackageReference Include="ViewFaceCore.model.fas_second" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.runtime.win.x64" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.model.face_detector" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.model.face_landmarker_pts5" Version="6.0.7" />
+		<PackageReference Include="ViewFaceCore.model.face_recognizer" Version="6.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Biometria.Domain\Biometria.Domain.csproj" />
+	  <ProjectReference Include="..\Biometria.Infrastructure\Biometria.Infrastructure.csproj" />
+	  <ProjectReference Include="..\WebReconocimiento\WebReconocimiento.csproj" />
+		<None Update="viewfacecore\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.model.face_detector\6.0.7\build\viewfacecore\models\face_detector.csta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.model.face_landmarker_pts5\6.0.7\build\viewfacecore\models\face_landmarker_pts5.csta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.model.face_recognizer\6.0.7\build\viewfacecore\models\face_recognizer.csta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.model.fas_first\6.0.7\build\viewfacecore\models\fas_first.csta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.model.fas_second\6.0.7\build\viewfacecore\models\fas_second.csta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\ViewFaceBridge.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\tennis_sandy_bridge.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\tennis_pentium.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\tennis_haswell.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\tennis.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaQualityAssessor300.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaPoseEstimation600.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaMaskDetector200.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaGenderPredictor600.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaFaceTracking600.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaFaceRecognizer610.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaFaceLandmarker600.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaFaceDetector600.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaFaceAntiSpoofingX600.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaEyeStateDetector200.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaAuthorize.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="C:\Users\scara\.nuget\packages\viewfacecore.runtime.win.x64\6.0.7\build\viewfacecore\win\x64\SeetaAgePredictor600.dll" />
+	</ItemGroup>
+
+</Project>

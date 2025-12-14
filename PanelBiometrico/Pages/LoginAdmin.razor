@@ -1,0 +1,49 @@
+﻿@page "/admin-login"
+@page "/"
+@inject PanelBiometrico.Services.AuthState AuthState
+@inject NavigationManager Nav
+
+<div class="container mt-5 col-md-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white text-center">
+            <h4>🛡️ Acceso Administrativo</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label>Contraseña:</label>
+                <input type="password" class="form-control" @bind="password" @onkeyup="CheckEnter" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="alert alert-danger p-2">@error</div>
+            }
+
+            <button class="btn btn-dark w-100" @onclick="IntentarLogin">Entrar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string password = "";
+    private string error = "";
+
+    private void IntentarLogin()
+    {
+        // ⚠️ AQUÍ ESTÁ EL TRUCO: Contraseña fija para la demo
+        if (password == "admin123")
+        {
+            AuthState.Login();
+            Nav.NavigateTo("/usuarios");
+        }
+        else
+        {
+            error = "Contraseña incorrecta";
+        }
+    }
+
+    private void CheckEnter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") IntentarLogin();
+    }
+}
