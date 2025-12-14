@@ -44,7 +44,7 @@ Sigue estos pasos para ejecutar el proyecto en tu entorno local:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/](https://github.com/)[TU_USUARIO]/Sistema-Biometrico-AntiSpoofing.git
+   git clone [https://github.com/](https://github.com/)[TU_USUARIO]/Sistema-Biometrico.git
    
 2. **Base de Datos**
     El proyecto utiliza SQL Server LocalDB. Asegúrate de tenerlo instalado (viene con Visual Studio). Ejecuta las migraciones para crear la base de datos automáticamente:
