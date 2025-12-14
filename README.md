@@ -64,8 +64,7 @@ Presiona F5 o "Iniciar".
    Para acceder al panel de gestión (/usuarios), utiliza la contraseña por defecto: admin123.
 
 
-
-
-   Desarrollado por **Nicolás Scaramella**.
-   Contacto: scaramellanicolas5@gmail.com
+Desarrollado por **Nicolás Scaramella**.
+   
+**Contacto**: scaramellanicolas5@gmail.com
 
